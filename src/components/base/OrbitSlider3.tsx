@@ -8,9 +8,10 @@ import Image from "next/image"
 type Props = {
   items: Media[]
   maxVisible?: number
+  className?: string
 }
 
-export function OrbitSlider3({ items, maxVisible = 7 }: Props) {
+export function OrbitSlider3({ items, maxVisible = 7, className = "" }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState<"next" | "prev">("next")
 
@@ -141,7 +142,10 @@ export function OrbitSlider3({ items, maxVisible = 7 }: Props) {
 
   if (!items.length) return null
   return (
-    <div className="flex flex-col items-center justify-between h-screen">
+    <div
+      className={`flex h-screen flex-col items-center justify-between overflow-hidden ${className}`}
+      aria-label="Анимация перелистывания картин"
+    >
       <div className="relative flex-1 w-full flex items-center justify-center px-8">
         {slots.map((img) => {
           const isMain = img.posIndex === centerPos
@@ -172,7 +176,7 @@ export function OrbitSlider3({ items, maxVisible = 7 }: Props) {
                 ref={isMain ? imgRef : null}
                 className="relative w-full h-full overflow-hidden bg-gray-200"
                 style={{
-                  boxShadow: "1px 1px 20px #4F4F4F",
+                  boxShadow: "0 24px 80px rgba(25, 19, 14, 0.32)",
                 }}
               >
                 {img && typeof img !== "number" && img.url && (

@@ -3,15 +3,15 @@ import "./styles.css"
 import { Header } from "@/components/layout/Header"
 
 export const metadata = {
-  description: "A blank template using Payload in a Next.js app.",
-  title: "Payload Blank Template",
+  description: "Iris Art — curated art collection for private interiors and collections.",
+  title: "Iris Art Gallery Boutique",
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
   return (
-    <html lang="en">
+    <html lang="ru">
       <body>
         <Header />
         <main>{children}</main>
