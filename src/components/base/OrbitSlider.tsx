@@ -10,10 +10,10 @@ type Props = {
 }
 
 export function OrbitSlider({ items, maxVisible = 5 }: Props) {
-  if (!items.length) return null
-
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState<"next" | "prev">("next")
+
+  if (!items.length) return null
 
   const allCount = Math.min(maxVisible, Math.max(1, items.length)) + 2
   const posOffset = 5

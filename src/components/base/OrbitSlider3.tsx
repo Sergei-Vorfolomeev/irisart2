@@ -8,13 +8,20 @@ import Image from "next/image"
 type Props = {
   items: Media[]
   maxVisible?: number
+  className?: string
 }
 
-export function OrbitSlider3({ items, maxVisible = 7 }: Props) {
+export function OrbitSlider3({ items, maxVisible = 7, className = "" }: Props) {
+  const imageItems = items.filter((item) => {
+    if (typeof item === "number" || !item.url) return false
+    if (item.mimeType) return item.mimeType.startsWith("image/")
+    return /\.(avif|gif|jpe?g|png|webp)$/i.test(item.url)
+  })
+
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState<"next" | "prev">("next")
 
-  const allCount = Math.min(maxVisible, Math.max(1, items.length)) + 2
+  const allCount = imageItems.length ? Math.min(maxVisible, imageItems.length) + 2 : 0
   const posOffset = 4
   const scaleOffset = 0.05
   const positions: Record<number, any> = {}
@@ -76,14 +83,16 @@ export function OrbitSlider3({ items, maxVisible = 7 }: Props) {
   }
 
   const slots = Array.from({ length: allCount }).map((_, i) => {
-    const itemIndex = (currentIndex + i) % items.length
-    return { ...items[itemIndex], posIndex: i }
+    const itemIndex = (currentIndex + i) % imageItems.length
+    return { ...imageItems[itemIndex], posIndex: i }
   })
 
   const paginate = (dir: "next" | "prev") => {
     setDirection(dir)
     setCurrentIndex((prev) =>
-      dir === "next" ? (prev - 1 + items.length) % items.length : (prev + 1) % items.length,
+      dir === "next"
+        ? (prev - 1 + imageItems.length) % imageItems.length
+        : (prev + 1) % imageItems.length,
     )
   }
 
@@ -139,9 +148,12 @@ export function OrbitSlider3({ items, maxVisible = 7 }: Props) {
     target.current.ry = 0
   }
 
-  if (!items.length) return null
+  if (!imageItems.length) return null
   return (
-    <div className="flex flex-col items-center justify-between h-screen">
+    <div
+      className={`flex h-screen flex-col items-center justify-between overflow-hidden ${className}`}
+      aria-label="Анимация перелистывания картин"
+    >
       <div className="relative flex-1 w-full flex items-center justify-center px-8">
         {slots.map((img) => {
           const isMain = img.posIndex === centerPos
@@ -172,7 +184,7 @@ export function OrbitSlider3({ items, maxVisible = 7 }: Props) {
                 ref={isMain ? imgRef : null}
                 className="relative w-full h-full overflow-hidden bg-gray-200"
                 style={{
-                  boxShadow: "1px 1px 20px #4F4F4F",
+                  boxShadow: "0 24px 70px rgba(34, 28, 22, 0.28)",
                 }}
               >
                 {img && typeof img !== "number" && img.url && (
